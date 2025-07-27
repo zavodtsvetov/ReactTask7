@@ -1,0 +1,33 @@
+{
+  "todos": [
+    {
+      "userId": 1,
+      "title": "Продать машину",
+      "completed": false,
+      "id": 1
+    },
+    {
+      "userId": 5,
+      "title": "Пробежка",
+      "completed": false,
+      "id": 2
+    },
+    {
+      "userId": 1,
+      "id": 3,
+      "title": "Ремонт",
+      "completed": false
+    },
+    {
+      "userId": 1,
+      "title": "Ролики",
+      "completed": false,
+      "id": 4
+    },
+    {
+      "title": "Пойти в кино",
+      "completed": false,
+      "id": 5
+    }
+  ]
+}

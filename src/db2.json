@@ -1,0 +1,22 @@
+{
+  "todos": [
+    {
+      "userId": 1,
+      "title": "Сходить к зубному",
+      "completed": false,
+      "id": 1
+    },
+    {
+      "userId": 1,
+      "id": 2,
+      "title": "Постирать носки",
+      "completed": false
+    },
+    {
+      "userId": 1,
+      "id": 3,
+      "title": "Арендовать мотоцикл",
+      "completed": false
+    }
+  ]
+}
