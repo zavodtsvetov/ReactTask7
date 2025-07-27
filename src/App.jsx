@@ -15,16 +15,25 @@ function App() {
   const [currentTask, setCurrentTask] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [isTomorrow, setIsTomorrow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   //внизу просто функция обновления базы данных
   const onClick = () => {
     setIsClicked(!isClicked);
   };
   useEffect(() => {
-    fetch("http://localhost:3005/todos")
-      .then((res) => res.json())
-      .then((loadedData) => {
-        setToDoList(loadedData);
-      });
+    setIsLoading(true);
+    setTimeout(() => {
+      fetch("http://localhost:3005/todos")
+        .then((res) => res.json())
+        .then((loadedData) => {
+          if (loadedData) {
+            setIsLoaded(true);
+            setToDoList(loadedData);
+          }
+          setIsLoading(false);
+        });
+    }, 1500);
   }, [isClicked]);
 
   const onHandleSort = () => {
@@ -35,20 +44,35 @@ function App() {
   };
   // создал второй json сервер, чтобы сымитировать второй день для задач
   const onChangeTomorrowToDoList = () => {
-    fetch("http://localhost:3006/todos")
-      .then((res) => res.json())
-      .then((loadedData) => {
-        setToDoList(loadedData);
-        setIsTomorrow(true);
-      });
+    setIsLoading(true);
+    setTimeout(() => {
+      fetch("http://localhost:3006/todos")
+        .then((res) => res.json())
+        .then((loadedData) => {
+          if (loadedData) {
+            setIsLoaded(true);
+            setToDoList(loadedData);
+            setIsLoaded(true);
+          } else {
+            setIsLoaded(false);
+          }
+          setIsLoading(false);
+        });
+    }, 1500);
   };
   const onChangeTodayToDoList = () => {
-    fetch("http://localhost:3005/todos")
-      .then((res) => res.json())
-      .then((loadedData) => {
-        setToDoList(loadedData);
-        setIsTomorrow(false);
-      });
+    setIsLoading(true);
+    setTimeout(() => {
+      fetch("http://localhost:3005/todos")
+        .then((res) => res.json())
+        .then((loadedData) => {
+          if (loadedData) {
+            setIsLoaded(true);
+            setToDoList(loadedData);
+          }
+          setIsLoading(false);
+        });
+    }, 1500);
   };
 
   const refButton = useRef(null);
@@ -107,30 +131,45 @@ function App() {
 
   return (
     <>
-      <AppContext.Provider value={contextFuncs}>
-        <div className={s.header}> {isTomorrow ? "ЗАВТРА" : "СЕГОДНЯ"} </div>
-        <span style={{ fontSize: "10px" }}>
-          <Clock isTomorrow={isTomorrow} />
-        </span>
-        <Form
-          onFormSubmit={onFormSubmit}
-          onInputChange={onInputChange}
-          refButton={refButton}
-        />
-        <br />
-        {toDoList.map(({ id, title }) => (
-          <div key={id}>
-            {id}. {title}
-          </div>
-        ))}
-        <hr />
-        <ToDoListsContext value={dateOfToDos}>
-          <DateButtons />
-        </ToDoListsContext>
-        <br />
-        <hr />
-        <AllButtons isTomorrow={isTomorrow} />
-      </AppContext.Provider>
+      {!isLoaded ? (
+        <p>Данные не загрузились, проверьте url</p>
+      ) : (
+        <>
+          <AppContext.Provider value={contextFuncs}>
+            <div className={s.header}>
+              {" "}
+              {isTomorrow ? "ЗАВТРА" : "СЕГОДНЯ"}{" "}
+            </div>
+            <span style={{ fontSize: "10px" }}>
+              <Clock isTomorrow={isTomorrow} />
+            </span>
+            {isLoading ? (
+              <p>Загрузка..</p>
+            ) : (
+              <>
+                <Form
+                  onFormSubmit={onFormSubmit}
+                  onInputChange={onInputChange}
+                  refButton={refButton}
+                />
+                <br />
+                {toDoList.map(({ id, title }) => (
+                  <div key={id}>
+                    {id}. {title}
+                  </div>
+                ))}
+                <hr />
+                <ToDoListsContext value={dateOfToDos}>
+                  <DateButtons />
+                </ToDoListsContext>
+                <br />
+                <hr />
+                <AllButtons isTomorrow={isTomorrow} />
+              </>
+            )}
+          </AppContext.Provider>
+        </>
+      )}
     </>
   );
 }
